@@ -1,0 +1,15 @@
+root = true
+
+[*]
+end_of_line = crlf
+insert_final_newline = true
+
+[*.{h,hpp,c,cpp}]
+indent_style = space
+indent_size = 4
+
+indent_braces = false
+indent_multi_line_relative_to = innermost_parenthesis
+space_before_function_open_parenthesis = false
+space_within_parameter_list_parentheses = false
+space_around_binary_operator = single

@@ -1,0 +1,21 @@
+# Folder
+.cache/
+bin/
+build/
+keys/
+image/
+
+# Commands
+compile_commands.json
+commands.md
+launcher.sh
+
+# Compilation trash
+*.o
+*.ko
+*.mod
+*.mod.c
+*.mod.o
+*.symvers
+*.order
+*.clangd
