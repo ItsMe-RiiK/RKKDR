@@ -10,6 +10,9 @@ compile_commands.json
 commands.md
 launcher.sh
 
+#misc file
+gui_error.log
+
 # Compilation trash
 *.o
 *.ko
@@ -19,3 +22,5 @@ launcher.sh
 *.symvers
 *.order
 *.clangd
+
+compile_flags.txt

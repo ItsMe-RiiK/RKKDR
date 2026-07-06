@@ -21,8 +21,10 @@ static struct input_dev *vmouse_dev;
 static struct delayed_work click_work;
 
 // This function runs in the background and simulates the click
-static void autoclick_worker_func(struct work_struct *work) {
-  if (enable && vmouse_dev) {
+static void autoclick_worker_func(struct work_struct *work)
+{
+  if (enable && vmouse_dev)
+  {
     // Send Mouse DOWN
     input_report_key(vmouse_dev, BTN_LEFT, 1);
     input_sync(vmouse_dev);
@@ -38,7 +40,8 @@ static void autoclick_worker_func(struct work_struct *work) {
   // Safety limit: if the interval is too small, it could lock up the kernel
   // worker thread
   int safe_interval = interval_ms;
-  if (safe_interval < 10) {
+  if (safe_interval < 10)
+  {
     safe_interval = 10;
   }
 
@@ -49,12 +52,14 @@ static void autoclick_worker_func(struct work_struct *work) {
   schedule_delayed_work(&click_work, msecs_to_jiffies(wait_time));
 }
 
-int autoclicker_init(void) {
+int autoclicker_init(void)
+{
   int error;
 
   // 1. Allocate the virtual input device
   vmouse_dev = input_allocate_device();
-  if (!vmouse_dev) {
+  if (!vmouse_dev)
+  {
     pr_err("[[KRNL]AutoClicker]: Failed to allocate input device\n");
     return -ENOMEM;
   }
@@ -69,7 +74,8 @@ int autoclicker_init(void) {
 
   // 4. Register the device with the system
   error = input_register_device(vmouse_dev);
-  if (error) {
+  if (error)
+  {
     pr_err("[[KRNL]AutoClicker]: Failed to register input device\n");
     input_free_device(vmouse_dev);
     return error;
@@ -83,12 +89,14 @@ int autoclicker_init(void) {
   return 0;
 }
 
-void autoclicker_exit(void) {
+void autoclicker_exit(void)
+{
   // Stop the background worker
   cancel_delayed_work_sync(&click_work);
 
   // Unregister and free the virtual mouse
-  if (vmouse_dev) {
+  if (vmouse_dev)
+  {
     input_unregister_device(vmouse_dev);
     // input_free_device() is automatically called by unregister
     vmouse_dev = NULL;
