@@ -25,7 +25,7 @@ compile_gui:
 sign:
 	$(KDIR)/scripts/sign-file sha256 $(KEYS_DIR)/MOK.priv $(KEYS_DIR)/MOK.der $(BIN_DIR)/$(DRIVER_NAME).ko
 
-compile_commands:
+compile_commands: prep
 	$(MAKE) -C $(KDIR) M=$(BUILD_DIR) compile_commands.json
 	@cp $(BUILD_DIR)/compile_commands.json $(PWD)/compile_commands.json
 	-@sed -i 's|$(BUILD_DIR)|$(SRC_DIR)|g' $(PWD)/compile_commands.json

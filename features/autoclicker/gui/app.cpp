@@ -68,8 +68,7 @@ gboolean update_ui(gpointer data)
   return G_SOURCE_REMOVE;
 }
 
-// Background thread to listen to /dev/input (Zero CPU usage via epoll, memory
-// safe)
+// Background thread to listen to /dev/input
 void hotkey_thread()
 {
   int epfd = epoll_create1(0);

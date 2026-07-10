@@ -1,21 +1,66 @@
 #include "features/autoclicker/autoclicker.h"
+#include "features/input/keyboard.h"
+#include "features/input/mouse.h"
+#include "features/screen/screen.h"
+
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Syakir");
-MODULE_DESCRIPTION("A simple Linux kernel module");
-MODULE_VERSION("0.1");
+MODULE_DESCRIPTION("RKKDR - Kernel-level input automation & screen access");
+MODULE_VERSION("0.2");
 
 static int __init my_kernel_driver_init(void)
 {
-  printk(KERN_INFO "[KERNEL_DRIVER]: Module loaded.\n");
-  return autoclicker_init();
+  int ret;
+
+  printk(KERN_INFO "[KERNEL_DRIVER]: Module loading...\n");
+
+  ret = autoclicker_init();
+  if (ret)
+  {
+    pr_err("[KERNEL_DRIVER]: autoclicker_init failed (%d)\n", ret);
+    return ret;
+  }
+
+  ret = vkeyboard_init();
+  if (ret)
+  {
+    pr_err("[KERNEL_DRIVER]: vkeyboard_init failed (%d)\n", ret);
+    autoclicker_exit();
+    return ret;
+  }
+
+  ret = vmouse_init();
+  if (ret)
+  {
+    pr_err("[KERNEL_DRIVER]: vmouse_init failed (%d)\n", ret);
+    vkeyboard_exit();
+    autoclicker_exit();
+    return ret;
+  }
+
+  ret = screen_init();
+  if (ret)
+  {
+    pr_err("[KERNEL_DRIVER]: screen_init failed (%d)\n", ret);
+    vmouse_exit();
+    vkeyboard_exit();
+    autoclicker_exit();
+    return ret;
+  }
+
+  printk(KERN_INFO "[KERNEL_DRIVER]: All features initialized successfully and ready to use.\n");
+  return 0;
 }
 
 static void __exit my_kernel_driver_exit(void)
 {
+  screen_exit();
+  vmouse_exit();
+  vkeyboard_exit();
   autoclicker_exit();
   printk(KERN_INFO "[KERNEL_DRIVER]: Module unloaded.\n");
 }
