@@ -4,6 +4,7 @@ bin/
 build/
 keys/
 image/
+projects/
 
 # Commands
 compile_commands.json
