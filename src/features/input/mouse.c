@@ -92,16 +92,16 @@ static int rkkdr_mouse_release(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations rkkdr_mouse_fops = {
-  .owner = THIS_MODULE,
-  .write = rkkdr_mouse_write,
-  .open = rkkdr_mouse_open,
-  .release = rkkdr_mouse_release,
+    .owner = THIS_MODULE,
+    .write = rkkdr_mouse_write,
+    .open = rkkdr_mouse_open,
+    .release = rkkdr_mouse_release,
 };
 
 static struct miscdevice rkkdr_mouse_misc = {
-  .minor = MISC_DYNAMIC_MINOR,
-  .name = "rkkdr_mouse",
-  .fops = &rkkdr_mouse_fops,
+    .minor = MISC_DYNAMIC_MINOR,
+    .name = "rkkdr_mouse",
+    .fops = &rkkdr_mouse_fops,
 };
 
 /* ============================================================

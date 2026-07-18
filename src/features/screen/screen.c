@@ -95,9 +95,11 @@ static long rkkdr_screen_ioctl(struct file *file, unsigned int cmd, unsigned lon
     }
     if (copy_to_user((void __user *)arg, &cached_info, sizeof(cached_info)))
       return -EFAULT;
-    pr_info(LOG_PREFIX "ioctl GET_INFO: %ux%u @ %ubpp "
-                       "(line_length: %u, fb_size: %llu)\n",
-            cached_info.width, cached_info.height, cached_info.bpp, cached_info.line_length, cached_info.fb_size);
+    pr_info(
+        LOG_PREFIX "ioctl GET_INFO: %ux%u @ %ubpp "
+                   "(line_length: %u, fb_size: %llu)\n",
+        cached_info.width, cached_info.height, cached_info.bpp, cached_info.line_length, cached_info.fb_size
+    );
     return 0;
 
   default:
@@ -119,17 +121,17 @@ static int rkkdr_screen_release(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations rkkdr_screen_fops = {
-  .owner = THIS_MODULE,
-  .read = rkkdr_screen_read,
-  .unlocked_ioctl = rkkdr_screen_ioctl,
-  .open = rkkdr_screen_open,
-  .release = rkkdr_screen_release,
+    .owner = THIS_MODULE,
+    .read = rkkdr_screen_read,
+    .unlocked_ioctl = rkkdr_screen_ioctl,
+    .open = rkkdr_screen_open,
+    .release = rkkdr_screen_release,
 };
 
 static struct miscdevice rkkdr_screen_misc = {
-  .minor = MISC_DYNAMIC_MINOR,
-  .name = "rkkdr_screen",
-  .fops = &rkkdr_screen_fops,
+    .minor = MISC_DYNAMIC_MINOR,
+    .name = "rkkdr_screen",
+    .fops = &rkkdr_screen_fops,
 };
 
 /* ============================================================
@@ -145,14 +147,18 @@ int screen_init(void)
 
   if (fb_available)
   {
-    pr_info(LOG_PREFIX "Display detected: %ux%u @ %ubpp "
-                       "(line_length: %u, fb_size: %llu bytes)\n",
-            cached_info.width, cached_info.height, cached_info.bpp, cached_info.line_length, cached_info.fb_size);
+    pr_info(
+        LOG_PREFIX "Display detected: %ux%u @ %ubpp "
+                   "(line_length: %u, fb_size: %llu bytes)\n",
+        cached_info.width, cached_info.height, cached_info.bpp, cached_info.line_length, cached_info.fb_size
+    );
   }
   else
   {
-    pr_warn(LOG_PREFIX "No display info detected at init. "
-                       "Screen reading will be unavailable.\n");
+    pr_warn(
+        LOG_PREFIX "No display info detected at init. "
+                   "Screen reading will be unavailable.\n"
+    );
   }
 
   // Register character device regardless

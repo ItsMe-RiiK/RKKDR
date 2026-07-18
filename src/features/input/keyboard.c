@@ -60,16 +60,16 @@ static int rkkdr_keyboard_release(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations rkkdr_keyboard_fops = {
-  .owner = THIS_MODULE,
-  .write = rkkdr_keyboard_write,
-  .open = rkkdr_keyboard_open,
-  .release = rkkdr_keyboard_release,
+    .owner = THIS_MODULE,
+    .write = rkkdr_keyboard_write,
+    .open = rkkdr_keyboard_open,
+    .release = rkkdr_keyboard_release,
 };
 
 static struct miscdevice rkkdr_keyboard_misc = {
-  .minor = MISC_DYNAMIC_MINOR,
-  .name = "rkkdr_keyboard",
-  .fops = &rkkdr_keyboard_fops,
+    .minor = MISC_DYNAMIC_MINOR,
+    .name = "rkkdr_keyboard",
+    .fops = &rkkdr_keyboard_fops,
 };
 
 /* ============================================================
