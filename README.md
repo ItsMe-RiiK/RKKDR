@@ -1,66 +1,93 @@
-# RKKDR
+# RKKDR (Kernel Driver)
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)
 
-**RKKDR** is a modular Linux Kernel Driver project designed to support various userspace-controllable features directly from kernel space. The current initial feature is a hardware-level AutoClicker, new feature will be added later.
+**RKKDR** is a modular Linux Kernel Driver project designed to support various userspace-controllable features directly from kernel space. Currently, it features a hardware-level AutoClicker and an Acer Battery WMI controller.
 
 > **⚠️ PLATFORM NOTICE:**
-> This driver interacts directly with the Linux kernel input subsystem (`<linux/input.h>`) and relies on `sysfs` for userspace communication. 
-> **It is ONLY compatible with Linux environments.** It is currently developed and tested on **Arch Linux**. Compatibility with other distros (Ubuntu, Debian, Fedora, etc.) is highly likely but not officially tested. It is strictly incompatible with Windows or macOS.
+> This driver interacts directly with the Linux kernel subsystem (`<linux/input.h>`, WMI, ACPI) and relies on `sysfs` for userspace communication. 
+> **It is ONLY compatible with Linux environments.** It is currently developed and tested on **Arch Linux**. Compatibility with other distros is highly likely but not officially tested. It is strictly incompatible with Windows or macOS.
+
+---
 
 ## Architecture Structure
 
-RKKDR enforces a strict separation between Kernel-Space C code and User-Space applications (like GUIs).
+RKKDR enforces a strict, professional separation between Kernel-Space driver code and User-Space applications. 
+
+- **Kernel Space (`src/`)**: Contains the core driver and hardware interaction logic.
+- **User Space (`projects/`)**: Contains standalone GUI applications and CLI utilities that interact with the kernel. These projects are fully isolated and have their own Makefiles.
 
 ```text
 RKKDR/
-├── src/                       <-- KERNEL-SPACE
+├── src/                       <-- KERNEL SPACE (Hardware logic)
 │   ├── main.c                 
 │   └── features/
-│       └── autoclicker/       
-│           ├── autoclicker.c  <-- Core kernel logic
-│           └── autoclicker.h  
+│       ├── autoclicker/       <-- Input subsystem simulation
+│       └── battery/           <-- WMI/ACPI firmware calls
 │
-└── features/                  <-- USER-SPACE (GUIs, Scripts, etc)
-    └── autoclicker/           
-        └── gui/               
-            ├── app.cpp        <-- Native C++ GTK3 GUI
-            └── image/
+└── projects/                  <-- USER SPACE (Interfaces)
+    ├── AutoClicker/        <-- Standalone C++ GTK3 GUI
+    │   ├── src/app.cpp
+    │   ├── Makefile
+    │   └── launcher.sh        <-- Automated launch script
+    │
+    └── AcerBattery/        <-- Standalone C CLI Utility
+        ├── src/main.c
+        └── Makefile
 ```
+
+---
 
 ## Setup & Compilation
 
 ### Requirements
-You will need the kernel headers for your specific Linux distribution, standard build tools, and `gtk3` for the C++ GUI.
+You will need the kernel headers for your specific Linux distribution, standard build tools, and `gtk3` for the AutoClicker C++ GUI.
 
 On **Arch Linux**:
 ```bash
 sudo pacman -S linux-headers base-devel gtk3 pkgconf
 ```
 
-## Usage
-
-### The Easy Way (Desktop Shortcut)
-1. Double-click the `AutoClicker.desktop` file (or move it to your actual Desktop).
-2. It will automatically compile the driver and C++ GUI, load it into the kernel, and launch it.
-
-### The Manual Way
-Compile the C++ GUI and load the kernel driver:
+### Building the Kernel Driver
+To compile and load the kernel driver into memory:
 ```bash
 make load
 ```
-*(Note: `make load` will automatically clean up compilation junk files after building).*
+*(Note: Output binaries are placed cleanly into the `release/` directory, while intermediate junk is kept in `build/`).*
 
-Run the C++ GUI:
-```bash
-sudo -E bin/AutoClickerGUI
-```
-
-Unload the driver when finished:
+To unload the driver when finished:
 ```bash
 make unload
 ```
+
+---
+
+## Using the Projects
+
+Because userspace applications are separated, they must be compiled via their own Makefiles.
+
+### AutoClicker GUI
+You can easily launch the GUI by running its dedicated launcher script, which automatically handles compilation and kernel loading:
+```bash
+./projects/AutoClicker/launcher.sh
+```
+
+### Acer Battery Controller
+Compile the CLI utility first:
+```bash
+make -C projects/AcerBattery
+```
+Then run it to check battery status:
+```bash
+./release/AcerBattery --status
+```
+Or to toggle battery health limits (requires sudo):
+```bash
+sudo ./release/AcerBattery --health 1
+```
+
+---
 
 ## License
 
