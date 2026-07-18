@@ -1,90 +1,52 @@
 # RKKDR (Kernel Driver)
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)
+![Platform](https://img.shields.io/badge/platform-Linux-green.svg)
 
-**RKKDR** is a modular Linux Kernel Driver project designed to support various userspace-controllable features directly from kernel space. Currently, it features a hardware-level AutoClicker and an Acer Battery WMI controller.
+**RKKDR** is a custom, modular Linux Kernel Driver designed to expose low-level hardware control directly to userspace applications. 
+
+By operating in pure kernel-space, RKKDR completely bypasses standard software boundaries (like X11/Wayland hooks). This allows external applications to simulate true physical hardware inputs and interface directly with motherboard firmware (WMI/ACPI), making its actions virtually undetectable by software monitors.
 
 > **⚠️ PLATFORM NOTICE:**
-> This driver interacts directly with the Linux kernel subsystem (`<linux/input.h>`, WMI, ACPI) and relies on `sysfs` for userspace communication. 
-> **It is ONLY compatible with Linux environments.** It is currently developed and tested on **Arch Linux**. Compatibility with other distros is highly likely but not officially tested. It is strictly incompatible with Windows or macOS.
+> This driver interacts directly with the Linux kernel subsystems (`<linux/input.h>`, WMI, ACPI) and relies on `sysfs` for userspace communication. 
+> **It is ONLY compatible with Linux environments.** It is currently developed and tested on **Arch Linux**.
 
 ---
 
-## Architecture Structure
+## Features & Projects
 
-RKKDR enforces a strict, professional separation between Kernel-Space driver code and User-Space applications. 
+The RKKDR kernel module serves as the hardware backend for several independent standalone projects. 
 
-- **Kernel Space (`src/`)**: Contains the core driver and hardware interaction logic.
-- **User Space (`projects/`)**: Contains standalone GUI applications and CLI utilities that interact with the kernel. These projects are fully isolated and have their own Makefiles.
+For detailed usage, GUIs, and specific documentation, please visit their respective GitHub repositories:
 
-```text
-RKKDR/
-├── src/                       <-- KERNEL SPACE (Hardware logic)
-│   ├── main.c                 
-│   └── features/
-│       ├── autoclicker/       <-- Input subsystem simulation
-│       └── battery/           <-- WMI/ACPI firmware calls
-│
-└── projects/                  <-- USER SPACE (Interfaces)
-    ├── AutoClicker/        <-- Standalone C++ GTK3 GUI
-    │   ├── src/app.cpp
-    │   ├── Makefile
-    │   └── launcher.sh        <-- Automated launch script
-    │
-    └── AcerBattery/        <-- Standalone C CLI Utility
-        ├── src/main.c
-        └── Makefile
-```
+- **[AutoClicker](https://github.com/ItsMe-RiiK/AutoClicker)**: A blazing fast, undetectable hardware-level AutoClicker GUI that simulates physical mouse inputs.
+- **[AcerBattery](https://github.com/ItsMe-RiiK/AcerBattery)**: A CLI controller that interacts with the Embedded Controller (EC) on Acer laptops to enforce physical battery charge limits (80% health mode) via WMI.
+- **[ChessBot](https://github.com/ItsMe-RiiK/ChessyNorCheesy)**: An automated chess engine bot that utilizes RKKDR's hardware input simulation to play natively.
 
+### For future Feature and Project available will be listed above here
 ---
 
-## Setup & Compilation
+## Compilation & Usage
+
+This repository is strictly the kernel driver backend. 
 
 ### Requirements
-You will need the kernel headers for your specific Linux distribution, standard build tools, and `gtk3` for the AutoClicker C++ GUI.
-
+You will need the kernel headers for your specific Linux distribution and standard build tools.
 On **Arch Linux**:
 ```bash
-sudo pacman -S linux-headers base-devel gtk3 pkgconf
+sudo pacman -S linux-headers base-devel
 ```
 
-### Building the Kernel Driver
-To compile and load the kernel driver into memory:
+### Building the Driver
+To compile and inject the kernel driver into memory:
 ```bash
 make load
 ```
-*(Note: Output binaries are placed cleanly into the `release/` directory, while intermediate junk is kept in `build/`).*
+*(Compiled binaries will be output cleanly to the `release/` directory).*
 
-To unload the driver when finished:
+To unload the driver from memory when finished:
 ```bash
 make unload
-```
-
----
-
-## Using the Projects
-
-Because userspace applications are separated, they must be compiled via their own Makefiles.
-
-### AutoClicker GUI
-You can easily launch the GUI by running its dedicated launcher script, which automatically handles compilation and kernel loading:
-```bash
-./projects/AutoClicker/launcher.sh
-```
-
-### Acer Battery Controller
-Compile the CLI utility first:
-```bash
-make -C projects/AcerBattery
-```
-Then run it to check battery status:
-```bash
-./release/AcerBattery --status
-```
-Or to toggle battery health limits (requires sudo):
-```bash
-sudo ./release/AcerBattery --health 1
 ```
 
 ---
