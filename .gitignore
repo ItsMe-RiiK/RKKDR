@@ -26,3 +26,4 @@ gui_error.log
 *.clangd
 
 compile_flags.txt
+.local.mk
