@@ -1,4 +1,5 @@
 #include "features/autoclicker/autoclicker.h"
+#include "features/battery/battery.h"
 #include "features/input/keyboard.h"
 #include "features/input/mouse.h"
 #include "features/screen/screen.h"
@@ -18,10 +19,18 @@ static int __init my_kernel_driver_init(void)
 
   printk(KERN_INFO "[KERNEL_DRIVER]: Module loading...\n");
 
+  ret = rkkdr_battery_init();
+  if (ret && ret != -ENODEV)
+  {
+    pr_err("[KERNEL_DRIVER]: rkkdr_battery_init failed (%d)\n", ret);
+    return ret;
+  }
+
   ret = autoclicker_init();
   if (ret)
   {
     pr_err("[KERNEL_DRIVER]: autoclicker_init failed (%d)\n", ret);
+    rkkdr_battery_exit();
     return ret;
   }
 
@@ -30,6 +39,7 @@ static int __init my_kernel_driver_init(void)
   {
     pr_err("[KERNEL_DRIVER]: vkeyboard_init failed (%d)\n", ret);
     autoclicker_exit();
+    rkkdr_battery_exit();
     return ret;
   }
 
@@ -39,6 +49,7 @@ static int __init my_kernel_driver_init(void)
     pr_err("[KERNEL_DRIVER]: vmouse_init failed (%d)\n", ret);
     vkeyboard_exit();
     autoclicker_exit();
+    rkkdr_battery_exit();
     return ret;
   }
 
@@ -49,6 +60,7 @@ static int __init my_kernel_driver_init(void)
     vmouse_exit();
     vkeyboard_exit();
     autoclicker_exit();
+    rkkdr_battery_exit();
     return ret;
   }
 
@@ -62,6 +74,7 @@ static void __exit my_kernel_driver_exit(void)
   vmouse_exit();
   vkeyboard_exit();
   autoclicker_exit();
+  rkkdr_battery_exit();
   printk(KERN_INFO "[KERNEL_DRIVER]: Module unloaded.\n");
 }
 
