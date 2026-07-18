@@ -34,15 +34,15 @@ post_clean:
 	@rm -rf $(BUILD_DIR)
 
 clean:
-	@echo 1234 | sudo -S rm -rf $(BUILD_DIR)/* $(BIN_DIR)/* $(PWD)/compile_commands.json 2>/dev/null || rm -rf $(BUILD_DIR)/* $(BIN_DIR)/* $(PWD)/compile_commands.json
+	sudo -S rm -rf $(BUILD_DIR)/* $(BIN_DIR)/* $(PWD)/compile_commands.json 2>/dev/null || rm -rf $(BUILD_DIR)/* $(BIN_DIR)/* $(PWD)/compile_commands.json
 
 load: all
 	@echo "Unloading old driver (if it exists)..."
-	-@echo 1234 | sudo -S rmmod $(DRIVER_NAME) 2>/dev/null || true
+	@sudo -S rmmod $(DRIVER_NAME) 2>/dev/null || true
 	@echo "Loading new driver..."
-	@echo 1234 | sudo -S insmod $(BIN_DIR)/$(DRIVER_NAME).ko
+	@sudo -S insmod $(BIN_DIR)/$(DRIVER_NAME).ko
 	@echo "Last 5 lines of kernel log:"
-	@echo 1234 | sudo -S dmesg | tail -n 5
+	@sudo -S dmesg | tail -n 5
 
 unload:
-	@echo 1234 | sudo -S rmmod $(DRIVER_NAME)
+	@sudo -S rmmod $(DRIVER_NAME)
