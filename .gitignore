@@ -5,6 +5,7 @@ build/
 keys/
 image/
 projects/
+.vscode/
 
 # Commands
 compile_commands.json
