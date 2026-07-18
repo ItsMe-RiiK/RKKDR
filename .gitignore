@@ -1,6 +1,6 @@
 # Folder
 .cache/
-bin/
+release/
 build/
 keys/
 image/
