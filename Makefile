@@ -9,7 +9,7 @@ KEYS_DIR := $(PWD)/keys
 SUDO_CMD ?= sudo
 -include .local.mk
 
-all: check_unload prep compile sign compile_commands post_clean
+all: check_unload compile sign compile_commands post_clean
 
 check_unload:
 	@if lsmod | grep -q "^$(DRIVER_NAME)\b"; then \
@@ -17,26 +17,26 @@ check_unload:
 		$(SUDO_CMD) rmmod $(DRIVER_NAME) || true; \
 	fi
 
-prep:
+prep: check_unload
 	@mkdir -p $(BUILD_DIR) $(RELEASE_DIR)
 	@cp -r $(SRC_DIR)/* $(BUILD_DIR)/
 	@echo "obj-m += $(DRIVER_NAME).o" > $(BUILD_DIR)/Makefile
 	@echo "$(DRIVER_NAME)-objs := $$(find $(BUILD_DIR) -name '*.c' | sed "s|^$(BUILD_DIR)/||" | sed 's/\.c$$/.o/' | tr '\n' ' ')" >> $(BUILD_DIR)/Makefile
 
-compile:
+compile: prep
 	$(MAKE) -C $(KDIR) M=$(BUILD_DIR) modules
 	@cp $(BUILD_DIR)/$(DRIVER_NAME).ko $(RELEASE_DIR)/
 
 
-sign:
+sign: compile
 	$(KDIR)/scripts/sign-file sha256 $(KEYS_DIR)/MOK.priv $(KEYS_DIR)/MOK.der $(RELEASE_DIR)/$(DRIVER_NAME).ko
 
-compile_commands: prep
+compile_commands: prep compile
 	$(MAKE) -C $(KDIR) M=$(BUILD_DIR) compile_commands.json
 	@cp $(BUILD_DIR)/compile_commands.json $(PWD)/compile_commands.json
 	-@sed -i 's|$(BUILD_DIR)|$(SRC_DIR)|g' $(PWD)/compile_commands.json
 
-post_clean:
+post_clean: sign compile_commands
 	@rm -rf $(BUILD_DIR)
 
 clean:
