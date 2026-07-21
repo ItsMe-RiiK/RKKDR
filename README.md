@@ -19,9 +19,8 @@ The RKKDR kernel module serves as the hardware backend for several independent s
 
 For detailed usage, GUIs, and specific documentation, please visit their respective GitHub repositories:
 
-- **[AutoClicker](https://github.com/ItsMe-RiiK/AutoClicker)**: A blazing fast, undetectable hardware-level AutoClicker GUI that simulates physical mouse inputs.
+- **[AutoClicker](https://github.com/ItsMe-RiiK/AutoClicker)**: A blazing fast AutoClicker that simulates physical mouse inputs.
 - **[AcerBattery](https://github.com/ItsMe-RiiK/AcerBattery)**: A CLI controller that interacts with the Embedded Controller (EC) on Acer laptops to enforce physical battery charge limits (80% health mode) via WMI.
-- **[ChessBot](https://github.com/ItsMe-RiiK/ChessyNorCheesy)**: An automated chess engine bot that utilizes RKKDR's hardware input simulation to play natively.
 
 ### For future Feature and Project available will be listed above here
 ---
