@@ -29,6 +29,11 @@ compile: prep
 
 
 sign: compile
+	@mkdir -p $(KEYS_DIR)
+	@if [ ! -f $(KEYS_DIR)/MOK.priv ] || [ ! -f $(KEYS_DIR)/MOK.der ]; then \
+		echo "Generating MOK keys for module signing..."; \
+		openssl req -new -x509 -newkey rsa:2048 -keyout $(KEYS_DIR)/MOK.priv -outform DER -out $(KEYS_DIR)/MOK.der -nodes -days 36500 -subj "/CN=$(DRIVER_NAME)/"; \
+	fi
 	$(KDIR)/scripts/sign-file sha256 $(KEYS_DIR)/MOK.priv $(KEYS_DIR)/MOK.der $(RELEASE_DIR)/$(DRIVER_NAME).ko
 
 compile_commands: prep compile
