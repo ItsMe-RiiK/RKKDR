@@ -27,3 +27,6 @@ gui_error.log
 
 compile_flags.txt
 .local.mk
+
+# Script for PKGBUILD
+PKGBUILD
