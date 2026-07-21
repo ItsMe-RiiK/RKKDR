@@ -15,4 +15,7 @@ sudo dkms add -m "${MODULE_NAME}" -v "${MODULE_VERSION}"
 sudo dkms build -m "${MODULE_NAME}" -v "${MODULE_VERSION}"
 sudo dkms install -m "${MODULE_NAME}" -v "${MODULE_VERSION}"
 
-echo "DKMS installation complete! The module will now rebuild automatically on kernel updates."
+echo "Configuring module to load automatically on boot..."
+echo "${MODULE_NAME}" | sudo tee "/etc/modules-load.d/${MODULE_NAME}.conf" > /dev/null
+
+echo "DKMS installation complete! The module will now rebuild automatically on kernel updates and load on boot."
