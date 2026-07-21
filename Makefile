@@ -9,7 +9,13 @@ KEYS_DIR := $(PWD)/keys
 SUDO_CMD ?= sudo
 -include .local.mk
 
-all: prep compile sign compile_commands post_clean
+all: check_unload prep compile sign compile_commands post_clean
+
+check_unload:
+	@if lsmod | grep -q "^$(DRIVER_NAME)\b"; then \
+		echo "Module $(DRIVER_NAME) is loaded. Unloading first..."; \
+		$(SUDO_CMD) rmmod $(DRIVER_NAME) || true; \
+	fi
 
 prep:
 	@mkdir -p $(BUILD_DIR) $(RELEASE_DIR)
