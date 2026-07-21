@@ -52,7 +52,7 @@ static void refresh_screen_info(void)
 
 static ssize_t rkkdr_screen_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 {
-  pr_info(LOG_PREFIX "Read request from userspace (pid=%d, count=%zu)\n", current->pid, count);
+  pr_debug(LOG_PREFIX "Read request from userspace (pid=%d, count=%zu)\n", current->pid, count);
 
   // Refresh on each read
   refresh_screen_info();
@@ -75,14 +75,14 @@ static ssize_t rkkdr_screen_read(struct file *file, char __user *buf, size_t cou
 
   *ppos += count;
 
-  pr_info(LOG_PREFIX "Sent screen info: %ux%u @ %ubpp\n", cached_info.width, cached_info.height, cached_info.bpp);
+  pr_debug(LOG_PREFIX "Sent screen info: %ux%u @ %ubpp\n", cached_info.width, cached_info.height, cached_info.bpp);
 
   return count;
 }
 
 static long rkkdr_screen_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
-  pr_info(LOG_PREFIX "ioctl request from userspace (pid=%d, cmd=0x%x)\n", current->pid, cmd);
+  pr_debug(LOG_PREFIX "ioctl request from userspace (pid=%d, cmd=0x%x)\n", current->pid, cmd);
 
   switch (cmd)
   {
@@ -95,7 +95,7 @@ static long rkkdr_screen_ioctl(struct file *file, unsigned int cmd, unsigned lon
     }
     if (copy_to_user((void __user *)arg, &cached_info, sizeof(cached_info)))
       return -EFAULT;
-    pr_info(
+    pr_debug(
         LOG_PREFIX "ioctl GET_INFO: %ux%u @ %ubpp "
                    "(line_length: %u, fb_size: %llu)\n",
         cached_info.width, cached_info.height, cached_info.bpp, cached_info.line_length, cached_info.fb_size

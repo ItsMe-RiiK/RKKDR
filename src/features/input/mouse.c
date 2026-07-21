@@ -43,27 +43,27 @@ static ssize_t rkkdr_mouse_write(struct file *file, const char __user *buf, size
   switch (cmd.type)
   {
   case RKKDR_MOUSE_REL:
-    pr_info(LOG_PREFIX "Mouse REL: dx=%d dy=%d\n", cmd.value, cmd.extra);
+    pr_debug(LOG_PREFIX "Mouse REL: dx=%d dy=%d\n", cmd.value, cmd.extra);
     input_report_rel(vmouse_dev, REL_X, cmd.value);
     input_report_rel(vmouse_dev, REL_Y, cmd.extra);
     input_sync(vmouse_dev);
     break;
 
   case RKKDR_MOUSE_ABS:
-    pr_info(LOG_PREFIX "Mouse ABS: x=%d y=%d\n", cmd.value, cmd.extra);
+    pr_debug(LOG_PREFIX "Mouse ABS: x=%d y=%d\n", cmd.value, cmd.extra);
     input_report_abs(vmouse_dev, ABS_X, cmd.value);
     input_report_abs(vmouse_dev, ABS_Y, cmd.extra);
     input_sync(vmouse_dev);
     break;
 
   case RKKDR_MOUSE_BTN:
-    pr_info(LOG_PREFIX "Mouse BTN: code=%u value=%d\n", cmd.code, cmd.value);
+    pr_debug(LOG_PREFIX "Mouse BTN: code=%u value=%d\n", cmd.code, cmd.value);
     input_report_key(vmouse_dev, cmd.code, cmd.value);
     input_sync(vmouse_dev);
     break;
 
   case RKKDR_MOUSE_SCROLL:
-    pr_info(LOG_PREFIX "Mouse SCROLL: vert=%d horiz=%d\n", cmd.value, cmd.extra);
+    pr_debug(LOG_PREFIX "Mouse SCROLL: vert=%d horiz=%d\n", cmd.value, cmd.extra);
     if (cmd.value)
       input_report_rel(vmouse_dev, REL_WHEEL, cmd.value);
     if (cmd.extra)

@@ -34,7 +34,7 @@ static ssize_t rkkdr_keyboard_write(struct file *file, const char __user *buf, s
   switch (cmd.type)
   {
   case RKKDR_KEYBOARD_KEY:
-    pr_info(LOG_PREFIX "Keyboard: code=%u value=%d\n", cmd.code, cmd.value);
+    pr_debug(LOG_PREFIX "Keyboard: code=%u value=%d\n", cmd.code, cmd.value);
     input_report_key(vkeyboard_dev, cmd.code, cmd.value);
     input_sync(vkeyboard_dev);
     break;
